@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /home/shenlibo/Tool/clion-2022.2.4/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/shenlibo/CLionProjects/LogicPro -B/home/shenlibo/CLionProjects/LogicPro/cmake-build-debug
+  command = /home/shenlibo/Tool/clion-2022.2.4/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/shenlibo/CLionProjects/Synthesis/LogicPro -B/home/shenlibo/CLionProjects/Synthesis/LogicPro/cmake-build-debug
   description = Re-running CMake...
   generator = 1
 

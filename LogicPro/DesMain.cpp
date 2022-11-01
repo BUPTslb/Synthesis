@@ -2,7 +2,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <bitset>
+//#include <bitset>
+#include <iostream>
+//#include "bit.cpp"
+using namespace std;
 
 /*定义一个密钥置换的映射*/
 static const int DesTransform[56] =
@@ -103,21 +106,124 @@ static const int DesFinal[64] =
         {
 
         };
-/*函数定义*/
-bool bit_get(unsigned char bits, int i) {
+
+/*比特运算相关函数声明*/
+/*
+static bool bit_get(std::string bits, int i);//获取bit位
+static bool bit_set(std::string *pString, int i, bool get);//设置相应位
+static void bit_rot_left(std::string *lkey, int i, int j);//旋转
+static void bit_xor(std::string *fblk, std::string *string, std::string *xblk, int i);//xor
+
+static bool bit_set(std::string *pString, int i, bool get){
+
+
+}
+
+static bool bit_get(unsigned char bits, int i) {
     bool bx;
-    if(((bits >> i) & 1) == 1)
+    if(((bits >> i) & 1) == 1)//右移i位&1
+    {
         bx = 1;
+        cout<<"b移位："<<(bits>>2)<<endl;
+    }
     else
         bx = 0;
     return bx;
+}
+
+static void bit_rot_left(std::string *lkey, int i, int j) {
+
+}
+
+static void bit_xor(std::string *fblk, std::string *string, std::string *xblk, int i) {
+
+}
+*/
+int bit_get(const unsigned char *bits, int pos)
+{
+    unsigned char  mask;
+    int            i;
+
+    /*设置掩码*/
+    mask = 0x80;
+    for(i=0; i<(pos % 8); i++)
+        mask = mask >> 1;
+    /*用位与运算获取对应的位*/
+    return (((mask & bits[(int)(pos / 8)]) == mask)? 1:0);
+}
+/*bit_set  设置缓冲区bits中位于pos位的状态*/
+void bit_set(unsigned char *bits, int pos, int state)
+{
+    unsigned char mask;
+    int           i;
+
+    /*设置掩码*/
+    mask = 0x80;
+    for(i=0; i<(pos % 8); i++)
+        mask=mask>>1;
+
+    /*依据state设置位*/
+    if(state)
+        bits[pos/8] = bits[pos/8] | mask;
+    else
+        bits[pos/8] = bits[pos/8] & (~mask);
+
+    return;
+}
+/*bit_xor  按位异或运算*/
+void bit_Xor(const unsigned char *bits1,const unsigned char *bits2,unsigned char *bitsx,int size)
+{
+    int i;
+    /*计算两个缓冲区的按位异或*/
+    for(i=0;i<size;i++)
+    {
+        if(bit_get(bits1,i) != bit_get(bits2,i))
+            bit_set(bitsx,i,1);
+        else
+            bit_set(bitsx,i,0);
+    }
+    return;
+}
+/*bit_rot_left 轮转缓冲区bits(含size位)，将位值向左移count位*/
+void bit_rot_left(unsigned char *bits,int size,int count)
+{
+    int  fbit,lbit,i,j;
+
+    /*将缓冲区向左轮转指定位数*/
+    if(size > 0)
+    {
+        for(j=0; j<count; j++)
+        {
+            for(i=0; i<=((size-1)/8); i++)
+            {
+                /*获得要从当前字节偏移的位*/
+                lbit = bit_get(&bits[i],0);
+                if(i==0)
+                {
+                    /*保存要从首字节移动到后面的位*/
+                    fbit = lbit;
+                }
+                else
+                {
+                    /*将前一字节最右边的位设置为当前字节最左边的位*/
+                    bit_set(&bits[i-1],7,lbit);
+                }
+
+                /*将当前字节向左移动*/
+                bits[i] = bits[i] << 1;
+            }
+            /*将缓冲区最右边的位设置为从第一个字节偏移的位*/
+            bit_set(bits,size-1,fbit);
+        }
+    }
+    return;
 }
 /*permute函数  用于转换、改变位序列*/
 
 //bits:密钥    mapping:转换表    n:输出的位数
 static void permute(unsigned char *bits, const int *mapping, int n)
 {
-    unsigned char *temp[8];//一个temp一个字节，8个共64bit数据
+    unsigned char *temp;//一个temp一个字节，8个共64bit数据
     int i;
 
     /*使用n位映射映射缓冲区*/
@@ -128,7 +234,7 @@ static void permute(unsigned char *bits, const int *mapping, int n)
     for(i=0; i<n; i++)
         //bit_set:把temp中i位置设置
         //bit_get：按照mapping获取bits中位数
-        bit_set(temp, i, bit_get(*bits,mapping[i]-1));
+        bit_set(temp, i, bit_get(bits,mapping[i]-1));
 
     memcpy(bits, temp, (int)ceil(n/8));
     return;
@@ -209,7 +315,7 @@ static int des_main(const unsigned char *source, unsigned char *target, const un
 
 
         /*加密数据，子密钥组以递增的顺序应用*/
-        bit_xor(fblk, subkeys[i], xblk, 48);
+        bit_Xor(fblk, subkeys[i], xblk, 48);
         memcpy(fblk, xblk, 6);
 
 
@@ -234,7 +340,7 @@ static int des_main(const unsigned char *source, unsigned char *target, const un
         permute(fblk, DesPbox, 32);
 
         /*计算左数据块与f缓冲区的异或值*/
-        bit_xor(lblk, fblk, xblk, 32);
+        bit_Xor(lblk, fblk, xblk, 32);
 
         /*设置本轮的左数据块*/
         memcpy(lblk, rblk, 4);
@@ -251,19 +357,22 @@ static int des_main(const unsigned char *source, unsigned char *target, const un
 
     return 0;
 }
-
 /*des_encipher DES加密数据*/
 void des_encipher(const unsigned char *plaintext, unsigned char *ciphertext, const unsigned char *key)
 {
     des_main(plaintext, ciphertext, key);
     return;
 }
+
 int main()
 {
-
-
-
-
+    const unsigned char plaintext[]="shenlibo";
+    const unsigned char key[]="12345678";
+    unsigned char ciphertext;
+des_encipher(plaintext,&ciphertext,key);
+cout<<"palintext="<<plaintext
+    <<endl<<ciphertext;
+return 0;
 }
 
 
