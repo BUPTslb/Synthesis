@@ -4,7 +4,6 @@
 /// file 1.c
 #include "iostream"
 #include "string"
-#include "bitset"
 
 using namespace std;
 std::string print_char_as_binary(char input) {
@@ -20,40 +19,7 @@ std::string print_char_as_binary(char input) {
     }
     return input_bin;
 }
-/*
-bool bit_get(std::string bits, int i) {
-    std::string a = bitset::bitset<>();
-    a.size();
-    for (int j = 0; j < a.size(); ++j)
-    {
-        a[j];
-    }
-    bool bx;
-    if(((bits >> i) & 0) == 0)
-    {
-        cout<<"bits移位之前为："<<bitset<sizeof(unsigned char)>(bits)<<endl;
-        cout<<"bits移位之后为："<<bitset<sizeof(unsigned char)>(bits>>4)<<endl;
-        bx = 1;
-    }
-    else
-        bx = 0;
-    return bx;
-}
 
-static bool bit_set(unsigned char *pString, int i, bool get){
-    unsigned char A[8];//
-    A=0b1<<i;
-    if(get)
-    {
-        pString=pString | A;
-    }
-    else
-    {
-        A=~A;
-        pString=pString & A;
-    }
-
-}*/
 int main(){
     std::string plaintext="shenlibo";
     std::string plaintext_bin;//默认为空

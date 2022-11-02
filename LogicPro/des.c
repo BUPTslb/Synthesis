@@ -120,31 +120,6 @@ void generate_key(unsigned char* key) {
 	}
 }
 
-void print_key_set(key_set key_set){
-	int i;
-	printf("K: \n");
-	for (i=0; i<8; i++) {
-		printf("%02X : ", key_set.k[i]);
-		print_char_as_binary(key_set.k[i]);
-		printf("\n");
-	}
-	printf("\nC: \n");
-
-	for (i=0; i<4; i++) {
-		printf("%02X : ", key_set.c[i]);
-		print_char_as_binary(key_set.c[i]);
-		printf("\n");
-	}
-	printf("\nD: \n");
-
-	for (i=0; i<4; i++) {
-		printf("%02X : ", key_set.d[i]);
-		print_char_as_binary(key_set.d[i]);
-		printf("\n");
-	}
-	printf("\n");
-}
-
 void generate_sub_keys(unsigned char* main_key, key_set* key_sets) {
 	int i, j;
 	int shift_size;
@@ -251,7 +226,7 @@ void process_message(unsigned char* message_piece, unsigned char* processed_piec
 	unsigned char initial_permutation[8];
 	memset(initial_permutation, 0, 8);
 	memset(processed_piece, 0, 8);
-
+    //获得初始置换后的明文
 	for (i=0; i<64; i++) {
 		shift_size = initial_message_permutation[i];
 		shift_byte = 0x80 >> ((shift_size - 1)%8);
@@ -260,6 +235,7 @@ void process_message(unsigned char* message_piece, unsigned char* processed_piec
 
 		initial_permutation[i/8] |= (shift_byte >> i%8);
 	}
+
 
 	unsigned char l[4], r[4];
 	for (i=0; i<4; i++) {
@@ -271,8 +247,9 @@ void process_message(unsigned char* message_piece, unsigned char* processed_piec
 
 	int key_index;
 	for (k=1; k<=16; k++) {
+        //memcpy，将src复制到ln中
 		memcpy(ln, r, 4);
-
+        //memset，将前n个字节设置为c
 		memset(er, 0, 6);
 
 		for (i=0; i<48; i++) {
