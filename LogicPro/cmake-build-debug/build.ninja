@@ -49,8 +49,20 @@ cmake_ninja_workdir = /home/shenlibo/CLionProjects/Synthesis/LogicPro/cmake-buil
 
 build cmake_object_order_depends_target_LogicPro: phony || CMakeFiles/LogicPro.dir
 
-build CMakeFiles/LogicPro.dir/DesMain.cpp.o: CXX_COMPILER__LogicPro_Debug /home/shenlibo/CLionProjects/Synthesis/LogicPro/DesMain.cpp || cmake_object_order_depends_target_LogicPro
-  DEP_FILE = CMakeFiles/LogicPro.dir/DesMain.cpp.o.d
+build CMakeFiles/LogicPro.dir/des.c.o: C_COMPILER__LogicPro_Debug /home/shenlibo/CLionProjects/Synthesis/LogicPro/des.c || cmake_object_order_depends_target_LogicPro
+  DEP_FILE = CMakeFiles/LogicPro.dir/des.c.o.d
+  FLAGS = -g
+  OBJECT_DIR = CMakeFiles/LogicPro.dir
+  OBJECT_FILE_DIR = CMakeFiles/LogicPro.dir
+
+build CMakeFiles/LogicPro.dir/run_des.c.o: C_COMPILER__LogicPro_Debug /home/shenlibo/CLionProjects/Synthesis/LogicPro/run_des.c || cmake_object_order_depends_target_LogicPro
+  DEP_FILE = CMakeFiles/LogicPro.dir/run_des.c.o.d
+  FLAGS = -g
+  OBJECT_DIR = CMakeFiles/LogicPro.dir
+  OBJECT_FILE_DIR = CMakeFiles/LogicPro.dir
+
+build CMakeFiles/LogicPro.dir/testgraph.cpp.o: CXX_COMPILER__LogicPro_Debug /home/shenlibo/CLionProjects/Synthesis/LogicPro/testgraph.cpp || cmake_object_order_depends_target_LogicPro
+  DEP_FILE = CMakeFiles/LogicPro.dir/testgraph.cpp.o.d
   FLAGS = -g -std=gnu++14
   OBJECT_DIR = CMakeFiles/LogicPro.dir
   OBJECT_FILE_DIR = CMakeFiles/LogicPro.dir
@@ -63,7 +75,7 @@ build CMakeFiles/LogicPro.dir/DesMain.cpp.o: CXX_COMPILER__LogicPro_Debug /home/
 #############################################
 # Link the executable LogicPro
 
-build LogicPro: CXX_EXECUTABLE_LINKER__LogicPro_Debug CMakeFiles/LogicPro.dir/DesMain.cpp.o
+build LogicPro: CXX_EXECUTABLE_LINKER__LogicPro_Debug CMakeFiles/LogicPro.dir/des.c.o CMakeFiles/LogicPro.dir/run_des.c.o CMakeFiles/LogicPro.dir/testgraph.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/LogicPro.dir
   POST_BUILD = :

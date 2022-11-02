@@ -7,8 +7,6 @@
 #include "bitset"
 
 using namespace std;
-//int x = 10;
-//int y = 11;
 std::string print_char_as_binary(char input) {
     int i;
     std::string input_bin;
@@ -65,14 +63,8 @@ int main(){
     {
         plaintext_bin += print_char_as_binary(plaintext[i]);
     }
-    cout<<"size of plainbin: "<<plaintext_bin.size()<<endl<<"plain_bin: "<<endl<<plaintext_bin<<endl;
-
-    char shift=0b0;
-    //
-    bitset<64>x (plaintext_bin);//bitset赋值必须<>中是常量
+    //cout<<"size of plainbin: "<<plaintext_bin.size()<<endl<<"plain_bin: "<<endl<<plaintext_bin<<endl;
     for(int i=0;i<plaintext_bin.size();i++)
     cout<<(~plaintext_bin[i]);
-
-
     return 0;
 }
