@@ -4,7 +4,5 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/AES" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/CGRA-Mapper" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/LogicPro/graph-llvm-ir" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/graph-llvm-ir" vcs="Git" />
   </component>
 </project>

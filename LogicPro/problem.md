@@ -49,8 +49,36 @@ llc -mtriple=mips-linux-gnu –view-dag-combine1-dags sum.ll
 -发现一个NYU的做CGRA的
 其中工具包含使用LLVM pass生成CDFG
 
-### 从Verilog/VHDL到CDFG
-还需寻找现有工具,应该能找到
+### 从VHDL到CDFG
+南佛洛丽达大学的毕业论文CHESS
+香港理工大学毕业论文中提到一个工具Hardware Petri Nets：通过佩特里网生成CDFG
+CHESS：
+1. 词法分析lexical analysis
+   将源程序转换为标记流，其中每个标记是具有集体意义的字符序列，如标识符、关键字、操作符或标点符号
+   使用Lex
+2. 语法分析
+   对它们施加层次结构，以验证程序的语法
+   使用YACC
+   YACC可以解析输入流中的标识符(token)
+
+
+
+
+### 设定编程模型
+选择使用能够描述行为级的硬件描述语言VHDL，Verilog级别相对低级，适合描述RTL
+在写VHDL时，使用architecture Behavioral of XXX is，结构体的行为命名，对应行为级描述。采用进程语句顺序描述实体行为，抽象程度高，大量使用逻辑运算（算术运算、关系运算），为高层次描述，不用关注电路组织和门级实现
+我们决定规定只能使用硬件相关的算子进行编程,类似于Rolf Drechsler的论文LIM-HDL
+其中支持的算子有：RM3,&，|，～，^，由于这篇文章是基于PLIM架构的，有MAJ操作，我们的逻辑组中使用MAGIC，将RM3更换为NOR
+常见的逻辑操作之 shift：文中没有给转换，因为有语义意义--最终图中的操作数与操作的连接
+另外存在LUT可以进行其他操作。
+算子支持：
+1. 外围电路SA：XOR、OR、AND、INV（只处理行间操作）
+2. RRAM性质，基于MAGIC逻辑族：NOR（只处理行内操作）
+由于底层都是逻辑算子，必然会有常用而且无法解决的情况，我们选择使用LUT来弥补
+3. 基于LUT：常用的、无法用以上算子综合的算子
+使用以上算子对算法重新书写，写成VHDL语言
+
+
 
 
 ## 高层次综合
