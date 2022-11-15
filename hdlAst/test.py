@@ -1,79 +1,117 @@
 import os
 import sys
 
-from hdlConvertorAst.language import Language
 from hdlConvertor import HdlConvertor
+from hdlConvertorAst.language import Language
 
 # TEST_DIR = os.path.join("..", "tests", "verilog")
 
 filenames = "test.vhd"
 include_dirs = []
 c = HdlConvertor()
+#c为HdlConvertor类的实例化
 # note that there is also Language.VERILOG_2005, Language.SYSTEM_VERILOG_2017 and others
-d = c.parse(filenames, Language.VHDL_2008, include_dirs, hierarchyOnly=False, debug=True)
+#d是对文件test.vhd的VHDL2008解析，这里应该已经生成了AST
+d = c.parse(filenames, Language.VHDL_2008, include_dirs, hierarchyOnly=False, debug=False)
 from hdlConvertorAst.to.vhdl.vhdl2008 import ToVhdl2008
 
-tv = ToVhdl2008(sys.stdout)
-tv.visit_HdlContext(d)
-from hdlConvertorAst.to.json import ToJson
+# tv = ToVhdl2008(sys.stdout)
+# #这个函数：将AST重新转到VHDL2008
+# #tv是类ToVhdl2008的实例化对象，d是HdlContext,tv调用输出
+# tv.visit_HdlContext(d)
+
+
 import json
+
+from hdlConvertorAst.to.json import ToJson
+
 tj = ToJson()
 j = tj.visit_HdlContext(d)
+#j就是解析之后的VHDL代码,输出其类型为<list>
+print('type of j=:',type(j),'\n')
 # pretty print json
-# print(json.dumps(j, sort_keys=True,
-#                  indent=4, separators=(',', ': ')))
+print(json.dumps(j, sort_keys=True,
+                  indent=4, separators=(',', ': ')))
+#以上函数会对生成的json进行可视化友好的输出
 # each HDL AST object __repr__ returns json like string
 for o in d.objs:
-    print(o)
+    print('type of d.objs:\n',type(o),'\n',o)
+print('\n','type of d: ',type(d),'\n')
 
-from hdlConvertorAst.hdlAst import HdlModuleDec
-from hdlConvertorAst.hdlAst import HdlIdDef
+#d的类型<'hdlConvertorAst.hdlAst._structural.HdlContext'>
+from hdlConvertorAst.hdlAst import HdlIdDef, HdlModuleDec,HdlModuleDef,HdlStmProcess,\
+        HdlStmBlock,HdlStmAssign,HdlOp,HdlStmIf,HdlStmWhile,iHdlExpr
+
 # print port names
+# obj有两种类型：
+#<class 'hdlConvertorAst.hdlAst._structural.HdlModuleDec'> 声明，entity部分
+#<class 'hdlConvertorAst.hdlAst._structural.HdlModuleDef'> 定义，architecture部分
+
+def DoAssign(body,N):
+#定义函数处理Assign类型
+    N=N+1;
+    print('Node_ID  :',N)
+    print('Dst      :',j.dst)
+    print('Operation:',j.src.fn)
+    print('Input    :',j.src.ops)
+    return N
+
+def DoIf(body,N):
+#定义函数处理If类型
+
+    return N
+
+def DoWhile(nody,N):
+#定义函数处理While类型
+
+    return N
+
+
 for o in d.objs:
-#     print(type(o))
+    # print('obj =',o)
+    # print('type of obj= ',type(o))
+    
+    #如果obj是声明，即为entity，输出port名
+    #isinstance函数，判断实例对象是否是已知的类型
     if isinstance(o, HdlModuleDec):
         for  i in o.ports:
-            # if isinstance(i , HdlIdDef):
-                print(i.name)
-#         print(o.dec)
-#         print(o.name)
-#         for x in o.dec.ports:
-#             print(x.name)
-from hdlConvertorAst.to.hdl_ast_visitor import HdlAstVisitor
-from hdlConvertorAst.hdlAst import HdlValueId, HdlOp
+            print(i.name)
+    #如果obj是定义，即为architecture
+    if isinstance(o,HdlModuleDef):
+        print('\n')
+        for i in o.objs:
+            if isinstance(i,HdlStmProcess):
+            #找到HdlStmProcess
+                N=0;
+                for j in i.body.body:
+                    if isinstance(j,HdlStmAssign):
+                        N=DoAssign(j,N)
+                    if isinstance(j,HdlStmIf):
+                        N=DoIf(j,N)
+                    # if isinstance(j,HdlStmIf):
+                    # #进入循环
+                    #     for k in range[j]:
+                    #         if isinstance(k,HdlOp):
+                    #             N=N+1
+                    #             print('Node_ID  :',N)
+                    #             print('type of cond:',type(k))
+                    #             print('Operation:',j.cond.fn)
+                    #             print('Input    :',j.cond.ops)
+                    #         elif k == 'elifs':
+                    #             print(k[0][0].fn)
 
-class PortNamesToUpperCase(HdlAstVisitor):
-    """
-    Make port names upper case HDL AST
+                    #         elif k == 'if_false':
+                    #             print('1')
 
-    :note: this is just a stupid rewrite of all variable names to upper case
-    """
-    def visit_HdlIdDef(self, o):
-        o.name = o.name.upper()
 
-    def visit_HdlStmProcess(self, o):
-        if o.sensitivity:
-            o.sensitivity = [self.visit_iHdlExpr(s) for s in o.sensitivity]
-        self.visit_iHdlStatement(o.body)
+                    #         elif k == 'if_true':    
+                    #             print('2')
+                                
 
-    def visit_iHdlExpr(self, o):
-        if isinstance(o, HdlValueId):
-            return HdlValueId(o.val.upper(), obj=o.obj)
-        elif isinstance(o, HdlOp):
-            o.ops = [self.visit_iHdlExpr(s) for s in o.ops]
-            return o
-        else:
-            return super(PortNamesToUpperCase, self).visit_iHdlExpr(o)
-
-    def visit_HdlStmIf(self, o):
-        o.cond = self.visit_iHdlExpr(o.cond)
-        super(PortNamesToUpperCase, self).visit_HdlStmIf(o)
-
-    def visit_HdlStmAssign(self, o):
-        o.src = self.visit_iHdlExpr(o.src)
-        o.dst = self.visit_iHdlExpr(o.dst)
-
-PortNamesToUpperCase().visit_HdlContext(d)
-
-tv = ToVhdl2008(sys.stdout)
-tv.visit_HdlContext(d)
+                        
+                    #输出条件
+                        
+                         
+            #HdlStmProcess的body是HdlStmBlock
+            #HdlStmBlock的body是[],列表类型list  
+                    

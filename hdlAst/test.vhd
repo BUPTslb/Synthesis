@@ -19,10 +19,25 @@ process(clk)
 begin
 	A <= in1 and in2;
 	B <= in1 or in2;
-	C <= (not A) xor B ;
+	C <= A xor B ;
 	D <= C sll 1;
+
+	if   A>0    then
+		A <= not A;
+	elsif A=0	then
+		A <= B;
+	else
+		A<=A;
+	end if;
+
+	while D=0 loop
+		D <= D sll 1;
+	end loop ; -- identifier
+
+
 	out1 <=A nor C ;
 	out2 <=B nor D;	
+
 end process;
 
 end Behavioral;
