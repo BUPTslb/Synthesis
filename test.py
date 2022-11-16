@@ -46,24 +46,43 @@ from hdlConvertorAst.hdlAst import HdlIdDef, HdlModuleDec,HdlModuleDef,HdlStmPro
 # obj有两种类型：
 #<class 'hdlConvertorAst.hdlAst._structural.HdlModuleDec'> 声明，entity部分
 #<class 'hdlConvertorAst.hdlAst._structural.HdlModuleDef'> 定义，architecture部分
+def Node_ID(N):
+    N=N+1
+    print('Node_ID  :',N)
+    return N
 
 def DoAssign(body,N):
 #定义函数处理Assign类型
-    N=N+1;
-    print('Node_ID  :',N)
+    N=Node_ID(N)
     print('Dst      :',j.dst)
     print('Operation:',j.src.fn)
     print('Input    :',j.src.ops)
     return N
 
+def DoBlock(body,N):
+    
+
+    return N
+
 def DoIf(body,N):
 #定义函数处理If类型
+#cond类型：
+    N=Node_ID(N)
+    print('Operation:',body.cond.fn)
+    print('Input:',body.cond.ops)
+#elif类型：
+    N=Node_ID(N)
+    body.elifs[0]=list(body.elifs[0])
+    #print('type of body.elifs: ',type(body.elifs[0]))
+    print('Operation: ',body.elifs[0][0].fn)
+    DoAssign(body.elifs[0][1].fn,N)
+
 
     return N
 
 def DoWhile(nody,N):
 #定义函数处理While类型
-
+    N=Node_ID(N)
     return N
 
 

@@ -22,15 +22,16 @@ begin
 	C <= A xor B ;
 	D <= C sll 1;
 
-	if   A>0    then
+	if   A<0    then
 		A <= not A;
 	elsif A=0	then
 		A <= B;
+		A <=A+B;
 	else
 		A<=A;
 	end if;
 
-	while D=0 loop
+	while D<0 loop
 		D <= D sll 1;
 	end loop ; -- identifier
 
