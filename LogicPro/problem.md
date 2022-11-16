@@ -1,4 +1,7 @@
 # 问题
+## 一些工程问题
+Git上传文件夹方法总结：  
+首先保证能够连接到GitHub：ssh -T git@github.com，记得输入yes
 ## 重写DES算法，化简
 multiple definition of：  
 不要把全局变量及全局方法的定义放在头文件。  
