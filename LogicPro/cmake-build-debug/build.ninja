@@ -67,6 +67,12 @@ build CMakeFiles/LogicPro.dir/CDFG/VectorXor.cpp.o: CXX_COMPILER__LogicPro_Debug
   OBJECT_DIR = CMakeFiles/LogicPro.dir
   OBJECT_FILE_DIR = CMakeFiles/LogicPro.dir/CDFG
 
+build CMakeFiles/LogicPro.dir/home/shenlibo/CLionProjects/Synthesis/demo/main.cpp.o: CXX_COMPILER__LogicPro_Debug /home/shenlibo/CLionProjects/Synthesis/demo/main.cpp || cmake_object_order_depends_target_LogicPro
+  DEP_FILE = CMakeFiles/LogicPro.dir/home/shenlibo/CLionProjects/Synthesis/demo/main.cpp.o.d
+  FLAGS = -g -std=gnu++14
+  OBJECT_DIR = CMakeFiles/LogicPro.dir
+  OBJECT_FILE_DIR = CMakeFiles/LogicPro.dir/home/shenlibo/CLionProjects/Synthesis/demo
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target LogicPro
@@ -75,7 +81,7 @@ build CMakeFiles/LogicPro.dir/CDFG/VectorXor.cpp.o: CXX_COMPILER__LogicPro_Debug
 #############################################
 # Link the executable LogicPro
 
-build LogicPro: CXX_EXECUTABLE_LINKER__LogicPro_Debug CMakeFiles/LogicPro.dir/desSample.cpp.o CMakeFiles/LogicPro.dir/vector_sum.c.o CMakeFiles/LogicPro.dir/CDFG/VectorXor.cpp.o
+build LogicPro: CXX_EXECUTABLE_LINKER__LogicPro_Debug CMakeFiles/LogicPro.dir/desSample.cpp.o CMakeFiles/LogicPro.dir/vector_sum.c.o CMakeFiles/LogicPro.dir/CDFG/VectorXor.cpp.o CMakeFiles/LogicPro.dir/home/shenlibo/CLionProjects/Synthesis/demo/main.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/LogicPro.dir
   POST_BUILD = :

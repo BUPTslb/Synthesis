@@ -1,4 +1,4 @@
-#include "mian.h"
+#include "main.h"
 void Include::clear() {
 
     //初始化Include信息
@@ -6,7 +6,7 @@ void Include::clear() {
     is_quotation = false;
     is_angle = false;
 }
-//流输出函数
+//流输出函数，重载<<，
 std::ostream &operator<<(std::ostream&s,const Include&I)
 {
     if (I.is_angle)
