@@ -51,40 +51,67 @@ def Node_ID(N):
     print('Node_ID  :',N)
     return N
 
-def DoAssign(body,N):
-#定义函数处理Assign类型
+def DoOp(src,N):
     N=Node_ID(N)
-    print('Dst      :',j.dst)
-    print('Operation:',j.src.fn)
-    print('Input    :',j.src.ops)
+    print('Input    : ',src.ops)
+    print('Operation: ',src.fn,'\n')
     return N
 
-def DoBlock(body,N):
-    
-
+def DoAssign(body,N):
+#定义函数处理Assign类型
+    if isinstance(body.src,HdlOp):
+        N=DoOp(body.src,N)
+    N=Node_ID(N)
+    print('Dst      :',body.dst)
+    print('Input    :',body.src)
+    #print('Operation:','SEQ','\n')
     return N
 
 def DoIf(body,N):
 #定义函数处理If类型
-#cond类型：
-    N=Node_ID(N)
-    print('Operation:',body.cond.fn)
-    print('Input:',body.cond.ops)
-#elif类型：
-    N=Node_ID(N)
-    body.elifs[0]=list(body.elifs[0])
-    #print('type of body.elifs: ',type(body.elifs[0]))
-    print('Operation: ',body.elifs[0][0].fn)
-    DoAssign(body.elifs[0][1].fn,N)
-
-
+#cond类型：if不是节点，条件是节点
+    print('Type     : If')
+    print('Condition:',body.cond)
+    N=DoOp(body.cond,N)
+    print('\n');
+#elif类型：列表[元组]，现将其改成list类型。可能为空，要先做判断
+    if body.elifs:#列表不为空
+        body.elifs[0]=list(body.elifs[0])
+        #print('type of body.elifs: ',type(body.elifs[0]))
+        print('Type     : Elsif')
+        N=DoOp(body.elifs[0][0],N)
+        N=DoBlock(body.elifs[0][1],N)
+    if body.if_true:
+        print('Statements When True:')
+        N=DoBlock(body.if_true,N)
+    if body.if_false:
+        print('Statements When False:')
+        N=DoBlock(body.if_false,N)
     return N
 
-def DoWhile(nody,N):
+def DoWhile(body,N):
 #定义函数处理While类型
-    N=Node_ID(N)
+    print('Type     : While')
+    print('Condition:',body.cond)
+    N=DoOp(body.cond,N)
+    print('\n');
+    N=DoBlock(body.body,N)
+    print('End Loop\n')
     return N
 
+def DoBlock(block,N):
+    for m in block.body:
+    #需要递归调用Block，加上对body类型的条件判断引用其他函数
+        if isinstance(m,HdlStmAssign):
+                N=DoAssign(m,N)
+                print('Operation: ',block.join_t,'\n')
+        if isinstance(m,HdlStmIf):
+                N=DoIf(m,N)
+        if isinstance(m,HdlStmWhile):
+                N=DoWhile(m,N)
+        if isinstance(m,HdlStmBlock):
+                N=DoBlock(m,N)
+    return N
 
 for o in d.objs:
     # print('obj =',o)
@@ -102,35 +129,10 @@ for o in d.objs:
             if isinstance(i,HdlStmProcess):
             #找到HdlStmProcess
                 N=0;
-                for j in i.body.body:
-                    if isinstance(j,HdlStmAssign):
-                        N=DoAssign(j,N)
-                    if isinstance(j,HdlStmIf):
-                        N=DoIf(j,N)
-                    # if isinstance(j,HdlStmIf):
-                    # #进入循环
-                    #     for k in range[j]:
-                    #         if isinstance(k,HdlOp):
-                    #             N=N+1
-                    #             print('Node_ID  :',N)
-                    #             print('type of cond:',type(k))
-                    #             print('Operation:',j.cond.fn)
-                    #             print('Input    :',j.cond.ops)
-                    #         elif k == 'elifs':
-                    #             print(k[0][0].fn)
-
-                    #         elif k == 'if_false':
-                    #             print('1')
-
-
-                    #         elif k == 'if_true':    
-                    #             print('2')
-                                
-
-                        
-                    #输出条件
+                DoBlock(i.body,N)
+                                        
                         
                          
-            #HdlStmProcess的body是HdlStmBlock
-            #HdlStmBlock的body是[],列表类型list  
+    #HdlStmProcess的body是HdlStmBlock
+    #HdlStmBlock的body是[],列表类型list  
                     
