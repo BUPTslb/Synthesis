@@ -66,7 +66,7 @@ def DoAssign(body,N):
     print('Input    :',body.src)
     #print('Operation:','SEQ','\n')
     return N
-#1
+
 def DoIf(body,N):
 #定义函数处理If类型
 #cond类型：if不是节点，条件是节点
